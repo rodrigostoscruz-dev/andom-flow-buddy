@@ -1,26 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return navigate({ to: "/login" });
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single();
+      if (!profile) return navigate({ to: "/login" });
+      if (profile.role === "producao") navigate({ to: "/posto" });
+      else navigate({ to: "/painel" });
+    })();
+  }, [navigate]);
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen grid place-items-center text-muted-foreground">
+      Carregando…
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
