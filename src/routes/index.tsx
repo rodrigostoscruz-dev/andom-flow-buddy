@@ -16,6 +16,7 @@ function Index() {
       const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single();
       if (!profile) return navigate({ to: "/login" });
       if (profile.role === "producao") navigate({ to: "/posto" });
+      else if (profile.role === "admin") navigate({ to: "/relatorio" });
       else navigate({ to: "/painel" });
     })();
   }, [navigate]);

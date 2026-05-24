@@ -45,7 +45,12 @@ function LoginPage() {
                 ))}
               </optgroup>
               <optgroup label="Setores">
-                {STATIONS.filter((s) => s.role !== "producao").map((s) => (
+                {STATIONS.filter((s) => s.role === "almoxarifado" || s.role === "qualidade").map((s) => (
+                  <option key={s.key} value={s.key}>{s.name}</option>
+                ))}
+              </optgroup>
+              <optgroup label="Administrador">
+                {STATIONS.filter((s) => s.role === "admin").map((s) => (
                   <option key={s.key} value={s.key}>{s.name}</option>
                 ))}
               </optgroup>

@@ -36,7 +36,7 @@ function RelatorioPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return navigate({ to: "/login" });
       const { data: p } = await supabase.from("profiles").select("role").eq("id", session.user.id).single();
-      if (!p || p.role === "producao") return navigate({ to: "/" });
+      if (!p || p.role !== "admin") return navigate({ to: "/" });
       setRole(p.role);
     })();
   }, [navigate]);

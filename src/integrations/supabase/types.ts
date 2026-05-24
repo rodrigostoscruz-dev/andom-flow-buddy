@@ -98,7 +98,7 @@ export type Database = {
     Enums: {
       call_sector: "almoxarifado" | "qualidade"
       call_status: "ativo" | "encerrado"
-      user_role: "producao" | "almoxarifado" | "qualidade"
+      user_role: "producao" | "almoxarifado" | "qualidade" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -228,7 +228,7 @@ export const Constants = {
     Enums: {
       call_sector: ["almoxarifado", "qualidade"],
       call_status: ["ativo", "encerrado"],
-      user_role: ["producao", "almoxarifado", "qualidade"],
+      user_role: ["producao", "almoxarifado", "qualidade", "admin"],
     },
   },
 } as const
