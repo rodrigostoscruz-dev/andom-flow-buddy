@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type Role = "producao" | "almoxarifado" | "qualidade";
+export type Role = "producao" | "almoxarifado" | "qualidade" | "admin";
 
 export const STATIONS = [
   { key: "cabeca", name: "Cabeça", role: "producao" as Role },
@@ -12,6 +12,7 @@ export const STATIONS = [
   { key: "integracao", name: "Integração", role: "producao" as Role },
   { key: "almoxarifado", name: "Almoxarifado", role: "almoxarifado" as Role },
   { key: "qualidade", name: "Qualidade", role: "qualidade" as Role },
+  { key: "admin", name: "Administrador", role: "admin" as Role },
 ];
 
 export const REASONS = {
