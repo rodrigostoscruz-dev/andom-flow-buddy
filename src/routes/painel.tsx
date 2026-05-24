@@ -60,7 +60,6 @@ function PainelPage() {
       <TopBar
         title={`Painel ${profile.station_name}`}
         subtitle={`${calls.length} chamado(s) em aberto`}
-        showReport
       />
       <main className="max-w-7xl mx-auto p-6">
         {calls.length === 0 ? (
