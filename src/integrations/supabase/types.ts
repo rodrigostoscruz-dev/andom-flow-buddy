@@ -14,16 +14,91 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calls: {
+        Row: {
+          color: string
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          reason: string
+          sector: Database["public"]["Enums"]["call_sector"]
+          started_at: string
+          station_id: string
+          station_name: string
+          status: Database["public"]["Enums"]["call_status"]
+        }
+        Insert: {
+          color: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          reason: string
+          sector: Database["public"]["Enums"]["call_sector"]
+          started_at?: string
+          station_id: string
+          station_name: string
+          status?: Database["public"]["Enums"]["call_status"]
+        }
+        Update: {
+          color?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          reason?: string
+          sector?: Database["public"]["Enums"]["call_sector"]
+          started_at?: string
+          station_id?: string
+          station_name?: string
+          status?: Database["public"]["Enums"]["call_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calls_station_id_fkey"
+            columns: ["station_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          station_key: string
+          station_name: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          station_key: string
+          station_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          station_key?: string
+          station_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
     }
     Enums: {
-      [_ in never]: never
+      call_sector: "almoxarifado" | "qualidade"
+      call_status: "ativo" | "encerrado"
+      user_role: "producao" | "almoxarifado" | "qualidade"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +225,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      call_sector: ["almoxarifado", "qualidade"],
+      call_status: ["ativo", "encerrado"],
+      user_role: ["producao", "almoxarifado", "qualidade"],
+    },
   },
 } as const
