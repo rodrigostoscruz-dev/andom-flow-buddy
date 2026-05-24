@@ -63,14 +63,14 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --background: oklch(0.18 0.02 250);
+  --foreground: oklch(0.98 0.005 250);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.7 0.18 240);
+  --primary-foreground: oklch(0.12 0.02 250);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
@@ -140,5 +140,21 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
   }
+}
+
+@keyframes andom-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.andom-blink-red {
+  animation: andom-blink 0.8s ease-in-out infinite;
+  background: oklch(0.55 0.25 27);
+  color: white;
+}
+.andom-blink-orange {
+  animation: andom-blink 0.9s ease-in-out infinite;
+  background: oklch(0.72 0.18 55);
+  color: oklch(0.15 0.05 50);
 }
