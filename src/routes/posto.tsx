@@ -6,7 +6,7 @@ import { TopBar } from "@/components/andom/TopBar";
 import { Timer } from "@/components/andom/Timer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { AlertCircle, Package, Boxes, ShieldCheck, X } from "lucide-react";
+import { AlertCircle, Package, Boxes, ShieldCheck, PackageX, X } from "lucide-react";
 
 export const Route = createFileRoute("/posto")({ component: PostoPage });
 
@@ -25,6 +25,7 @@ const ICONS: Record<string, any> = {
   "abast-posto": Package,
   "abast-kanban": Boxes,
   qualidade: ShieldCheck,
+  "separacao-errada": PackageX,
 };
 
 function PostoPage() {

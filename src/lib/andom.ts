@@ -20,6 +20,7 @@ export const REASONS = {
     { id: "parado", label: "Posto Parado", color: "red" as const },
     { id: "abast-posto", label: "Aguardando abastecimento de posto", color: "orange" as const },
     { id: "abast-kanban", label: "Aguardando abastecimento de kanban", color: "orange" as const },
+    { id: "separacao-errada", label: "Separação Errada", color: "orange" as const },
   ],
   qualidade: [
     { id: "qualidade", label: "Aguardando qualidade", color: "red" as const },
