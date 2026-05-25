@@ -28,7 +28,7 @@ function LoginPage() {
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-8 shadow-2xl">
         <div className="mb-6">
           <div className="text-xs uppercase tracking-[0.3em] text-primary/80">Projeto</div>
-          <h1 className="text-4xl font-black tracking-tight">ANDOM</h1>
+          <h1 className="text-4xl font-black tracking-tight">ANDON</h1>
           <p className="text-sm text-muted-foreground mt-1">Sinalização da produção</p>
         </div>
         <form onSubmit={onSubmit} className="space-y-4">

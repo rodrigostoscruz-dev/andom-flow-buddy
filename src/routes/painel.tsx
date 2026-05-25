@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TopBar } from "@/components/andom/TopBar";
 import { Timer } from "@/components/andom/Timer";
@@ -7,7 +7,7 @@ import { Inbox } from "lucide-react";
 
 export const Route = createFileRoute("/painel")({ component: PainelPage });
 
-type Profile = { id: string; station_name: string; role: "almoxarifado" | "qualidade" | "producao" };
+type Profile = { id: string; station_name: string; role: "almoxarifado" | "qualidade" | "producao" | "admin" };
 type Call = {
   id: string;
   station_name: string;
@@ -22,6 +22,9 @@ function PainelPage() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [calls, setCalls] = useState<Call[]>([]);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const beepCycleRef = useRef<number | null>(null);
+  const beepTimeoutsRef = useRef<number[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -52,6 +55,56 @@ function PainelPage() {
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [profile]);
+
+  // Intermittent beep when there are active calls.
+  // Plays short beeps during 10 seconds, then waits 3 minutes, and repeats.
+  useEffect(() => {
+    if (!profile) return;
+    if (calls.length === 0) return;
+
+    const ensureCtx = () => {
+      if (!audioCtxRef.current) {
+        const Ctx = (window.AudioContext || (window as any).webkitAudioContext);
+        if (Ctx) audioCtxRef.current = new Ctx();
+      }
+      return audioCtxRef.current;
+    };
+
+    const beep = (durationMs: number) => {
+      const ctx = ensureCtx();
+      if (!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "square";
+      osc.frequency.value = 880;
+      gain.gain.value = 0.15;
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + durationMs / 1000);
+    };
+
+    const burst = () => {
+      // 10 seconds of intermittent beeps: 300ms on / 300ms off
+      beepTimeoutsRef.current.forEach((t) => window.clearTimeout(t));
+      beepTimeoutsRef.current = [];
+      const total = 10_000;
+      const step = 600;
+      for (let t = 0; t < total; t += step) {
+        const id = window.setTimeout(() => beep(300), t);
+        beepTimeoutsRef.current.push(id);
+      }
+    };
+
+    burst();
+    beepCycleRef.current = window.setInterval(burst, 3 * 60 * 1000);
+
+    return () => {
+      if (beepCycleRef.current) window.clearInterval(beepCycleRef.current);
+      beepTimeoutsRef.current.forEach((t) => window.clearTimeout(t));
+      beepTimeoutsRef.current = [];
+    };
+  }, [profile, calls.length === 0]);
 
   if (!profile) return null;
 
