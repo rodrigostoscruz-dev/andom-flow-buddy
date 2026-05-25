@@ -80,6 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Projeto Andom" },
+      { name: "twitter:description", content: "Sistema Andom de sinalização da produção" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3970393e-ff02-4482-aaed-dd50790a085c/id-preview-3f9ef75b--a1255520-6a06-4b90-96ff-5e38226bdf06.lovable.app-1779703848329.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3970393e-ff02-4482-aaed-dd50790a085c/id-preview-3f9ef75b--a1255520-6a06-4b90-96ff-5e38226bdf06.lovable.app-1779703848329.png" },
     ],
     links: [
       {
