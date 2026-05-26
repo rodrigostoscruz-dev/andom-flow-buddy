@@ -65,7 +65,7 @@ function PostoPage() {
     return () => { supabase.removeChannel(ch); };
   }, [profile]);
 
-  async function call(sector: "almoxarifado" | "qualidade", reasonId: string, label: string, color: "red" | "orange") {
+  async function call(sector: "almoxarifado" | "qualidade", reasonId: string, label: string, color: "red" | "orange" | "yellow") {
     if (!profile) return;
     if (active.some((c) => c.reason === label)) {
       toast.warning("Este chamado já está ativo.");
@@ -102,7 +102,7 @@ function PostoPage() {
               {active.map((c) => (
                 <div
                   key={c.id}
-                  className={`rounded-2xl p-6 shadow-xl ${c.color === "red" ? "andom-blink-red" : "andom-blink-orange"}`}
+                  className={`rounded-2xl p-6 shadow-xl ${c.color === "red" ? "andom-blink-red" : c.color === "yellow" ? "andom-blink-yellow" : "andom-blink-orange"}`}
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-1">
@@ -129,6 +129,8 @@ function PostoPage() {
               const Icon = ICONS[r.id];
               const bg = r.color === "red"
                 ? "bg-[oklch(0.55_0.25_27)] hover:bg-[oklch(0.6_0.25_27)]"
+                : r.color === "yellow"
+                ? "bg-[oklch(0.82_0.17_85)] hover:bg-[oklch(0.88_0.17_85)] text-[oklch(0.15_0.05_50)]"
                 : "bg-[oklch(0.72_0.18_55)] hover:bg-[oklch(0.78_0.18_55)] text-[oklch(0.15_0.05_50)]";
               return (
                 <button

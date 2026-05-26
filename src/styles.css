@@ -158,3 +158,8 @@
   background: oklch(0.72 0.18 55);
   color: oklch(0.15 0.05 50);
 }
+.andom-blink-yellow {
+  animation: andom-blink 0.9s ease-in-out infinite;
+  background: oklch(0.82 0.17 85);
+  color: oklch(0.15 0.05 50);
+}

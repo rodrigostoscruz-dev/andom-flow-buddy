@@ -125,7 +125,7 @@ function PainelPage() {
             {calls.map((c) => (
               <div
                 key={c.id}
-                className={`rounded-2xl p-8 shadow-2xl ${c.color === "red" ? "andom-blink-red" : "andom-blink-orange"}`}
+                className={`rounded-2xl p-8 shadow-2xl ${c.color === "red" ? "andom-blink-red" : c.color === "yellow" ? "andom-blink-yellow" : "andom-blink-orange"}`}
               >
                 <div className="text-xs uppercase tracking-[0.25em] opacity-80">{c.sector}</div>
                 <div className="text-4xl font-black tracking-tight leading-tight mt-1">{c.station_name}</div>
