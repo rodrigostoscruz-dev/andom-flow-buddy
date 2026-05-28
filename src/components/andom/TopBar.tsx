@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut, FileSpreadsheet } from "lucide-react";
 import { useEffect, useState } from "react";
+import rcLogo from "@/assets/rc-solutche-logo.png";
 
 export function TopBar({ title, subtitle }: { title: string; subtitle?: string; showReport?: boolean }) {
   const navigate = useNavigate();
@@ -24,7 +25,15 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string; 
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
         <div className="flex-1">
           <div className="text-[10px] uppercase tracking-[0.3em] text-primary/80">Projeto Andon</div>
-          <h1 className="text-xl font-bold leading-tight">{title}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold leading-tight">{title}</h1>
+            <img
+              src={rcLogo}
+              alt="RC SoluTche - desenvolvedora"
+              className="h-7 w-7 rounded-md object-cover ring-1 ring-white/15"
+              title="Desenvolvido por RC SoluTche"
+            />
+          </div>
           {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
         </div>
         {role === "admin" && (
