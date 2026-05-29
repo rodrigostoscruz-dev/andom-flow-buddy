@@ -27,18 +27,18 @@ function LoginPage() {
   return (
     <div className="min-h-screen grid place-items-center p-6 bg-gradient-to-br from-background to-[oklch(0.22_0.04_240)]">
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-8 shadow-2xl">
-        <div className="mb-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-primary/80">Projeto</div>
-          <div className="flex items-center gap-3">
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <div className="text-xs uppercase tracking-[0.3em] text-primary/80">Projeto</div>
             <h1 className="text-4xl font-black tracking-tight">ANDON</h1>
-            <img
-              src={rcLogo}
-              alt="RC SoluTche - desenvolvedora"
-              className="h-10 w-10 rounded-md object-cover ring-1 ring-white/15"
-              title="Desenvolvido por RC SoluTche"
-            />
+            <p className="text-sm text-muted-foreground mt-1">Sinalização da produção</p>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">Sinalização da produção</p>
+          <img
+            src={rcLogo}
+            alt="RC SoluTche - desenvolvedora"
+            className="h-28 w-28 rounded-lg object-cover ring-1 ring-white/15 shrink-0"
+            title="Desenvolvido por RC SoluTche"
+          />
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
