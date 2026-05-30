@@ -6,7 +6,7 @@ import { TopBar } from "@/components/andom/TopBar";
 import { Timer } from "@/components/andom/Timer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { AlertCircle, Package, Boxes, ShieldCheck, PackageX, X } from "lucide-react";
+import { AlertCircle, Package, Boxes, ShieldCheck, PackageX, X, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/posto")({ component: PostoPage });
 
@@ -18,6 +18,7 @@ type Call = {
   sector: "almoxarifado" | "qualidade";
   started_at: string;
   status: string;
+  acknowledged_at: string | null;
 };
 
 const ICONS: Record<string, any> = {
@@ -102,7 +103,7 @@ function PostoPage() {
               {active.map((c) => (
                 <div
                   key={c.id}
-                  className={`rounded-2xl p-6 shadow-xl ${c.color === "red" ? "andom-blink-red" : c.color === "yellow" ? "andom-blink-yellow" : "andom-blink-orange"}`}
+                  className={`rounded-2xl p-6 shadow-xl ${c.acknowledged_at ? "bg-[oklch(0.35_0.08_240)] text-white" : c.color === "red" ? "andom-blink-red" : c.color === "yellow" ? "andom-blink-yellow" : "andom-blink-orange"}`}
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-1">
@@ -110,6 +111,11 @@ function PostoPage() {
                       <div className="text-2xl font-black leading-tight">{profile.station_name}</div>
                       <div className="text-sm font-medium mt-1">{c.reason}</div>
                       <div className="text-3xl font-bold mt-3"><Timer startedAt={c.started_at} /></div>
+                      {c.acknowledged_at && (
+                        <div className="mt-2 inline-flex items-center gap-2 bg-white/20 rounded-md px-2 py-1 text-xs">
+                          <CheckCircle2 className="w-3 h-3" /> Setor a caminho
+                        </div>
+                      )}
                     </div>
                     <Button onClick={() => close(c.id)} size="lg" variant="secondary" className="gap-2 font-bold">
                       <X className="w-5 h-5" /> Encerrar
