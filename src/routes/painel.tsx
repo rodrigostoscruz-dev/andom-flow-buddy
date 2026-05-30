@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TopBar } from "@/components/andom/TopBar";
 import { Timer } from "@/components/andom/Timer";
-import { Inbox } from "lucide-react";
+import { Inbox, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/painel")({ component: PainelPage });
 
@@ -16,6 +18,7 @@ type Call = {
   sector: string;
   started_at: string;
   status: string;
+  acknowledged_at: string | null;
 };
 
 function PainelPage() {
@@ -97,7 +100,7 @@ function PainelPage() {
     };
 
     burst();
-    beepCycleRef.current = window.setInterval(burst, 3 * 60 * 1000);
+    beepCycleRef.current = window.setInterval(burst, 30 * 60 * 1000);
 
     return () => {
       if (beepCycleRef.current) window.clearInterval(beepCycleRef.current);
@@ -107,6 +110,16 @@ function PainelPage() {
   }, [profile, calls.length === 0]);
 
   if (!profile) return null;
+
+  async function acknowledge(id: string) {
+    if (!profile) return;
+    const { error } = await supabase
+      .from("calls")
+      .update({ acknowledged_at: new Date().toISOString(), acknowledged_by: profile.id })
+      .eq("id", id);
+    if (error) toast.error(error.message);
+    else toast.success("Marcado como em atendimento");
+  }
 
   return (
     <div className="min-h-screen">
@@ -125,12 +138,21 @@ function PainelPage() {
             {calls.map((c) => (
               <div
                 key={c.id}
-                className={`rounded-2xl p-8 shadow-2xl ${c.color === "red" ? "andom-blink-red" : c.color === "yellow" ? "andom-blink-yellow" : "andom-blink-orange"}`}
+                className={`rounded-2xl p-8 shadow-2xl ${c.acknowledged_at ? "bg-[oklch(0.35_0.08_240)] text-white" : c.color === "red" ? "andom-blink-red" : c.color === "yellow" ? "andom-blink-yellow" : "andom-blink-orange"}`}
               >
                 <div className="text-xs uppercase tracking-[0.25em] opacity-80">{c.sector}</div>
                 <div className="text-4xl font-black tracking-tight leading-tight mt-1">{c.station_name}</div>
                 <div className="text-base font-semibold mt-2 opacity-95">{c.reason}</div>
                 <div className="text-3xl font-bold mt-6"><Timer startedAt={c.started_at} /></div>
+                {c.acknowledged_at ? (
+                  <div className="mt-4 inline-flex items-center gap-2 bg-white/20 rounded-md px-3 py-1 text-sm">
+                    <CheckCircle2 className="w-4 h-4" /> Em atendimento
+                  </div>
+                ) : (
+                  <Button onClick={() => acknowledge(c.id)} variant="secondary" className="mt-4 gap-2 font-bold">
+                    <CheckCircle2 className="w-4 h-4" /> Em Atendimento
+                  </Button>
+                )}
               </div>
             ))}
           </div>
