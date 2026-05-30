@@ -1,18 +1,35 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type Role = "producao" | "almoxarifado" | "qualidade" | "admin";
+export type Role =
+  | "producao"
+  | "almoxarifado"
+  | "qualidade"
+  | "admin"
+  | "coord_qualidade"
+  | "coord_almoxarifado"
+  | "gerente_supply"
+  | "diretor_industrial";
 
-export const STATIONS = [
-  { key: "cabeca", name: "Cabeça", role: "producao" as Role },
-  { key: "transportador", name: "Transportador", role: "producao" as Role },
-  { key: "mesa-saida", name: "Mesa de Saída", role: "producao" as Role },
-  { key: "eletrica", name: "Elétrica", role: "producao" as Role },
-  { key: "ponte", name: "Ponte", role: "producao" as Role },
-  { key: "plother-icf", name: "Plother/ICF", role: "producao" as Role },
-  { key: "integracao", name: "Integração", role: "producao" as Role },
-  { key: "almoxarifado", name: "Almoxarifado", role: "almoxarifado" as Role },
-  { key: "qualidade", name: "Qualidade", role: "qualidade" as Role },
-  { key: "admin", name: "Administrador", role: "admin" as Role },
+export const ROLE_LABELS: Record<Role, string> = {
+  producao: "Produção",
+  almoxarifado: "Almoxarifado",
+  qualidade: "Qualidade",
+  admin: "Administrador",
+  coord_qualidade: "Coordenador Qualidade",
+  coord_almoxarifado: "Coordenador Almoxarifado",
+  gerente_supply: "Gerente Supply Chain",
+  diretor_industrial: "Diretor Industrial",
+};
+
+export const ROLE_OPTIONS: Role[] = [
+  "producao",
+  "almoxarifado",
+  "qualidade",
+  "coord_qualidade",
+  "coord_almoxarifado",
+  "gerente_supply",
+  "diretor_industrial",
+  "admin",
 ];
 
 export const REASONS = {
