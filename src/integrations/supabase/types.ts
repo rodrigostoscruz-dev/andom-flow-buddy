@@ -71,6 +71,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          must_change_password: boolean
           role: Database["public"]["Enums"]["user_role"]
           station_key: string
           station_name: string
@@ -78,6 +79,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id: string
+          must_change_password?: boolean
           role: Database["public"]["Enums"]["user_role"]
           station_key: string
           station_name: string
@@ -85,6 +87,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          must_change_password?: boolean
           role?: Database["public"]["Enums"]["user_role"]
           station_key?: string
           station_name?: string

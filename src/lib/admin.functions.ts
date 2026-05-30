@@ -67,6 +67,7 @@ export const adminCreateStation = createServerFn({ method: "POST" })
       station_key: data.stationKey,
       station_name: data.stationName,
       role: data.role,
+      must_change_password: true,
     });
     if (pErr) {
       await supabaseAdmin.auth.admin.deleteUser(created.user.id);
@@ -99,6 +100,11 @@ export const adminUpdateStation = createServerFn({ method: "POST" })
         password: data.password,
       });
       if (aErr) throw new Error(aErr.message);
+      const { error: fErr } = await supabaseAdmin
+        .from("profiles")
+        .update({ must_change_password: true })
+        .eq("id", data.id);
+      if (fErr) throw new Error(fErr.message);
     }
     return { ok: true };
   });
