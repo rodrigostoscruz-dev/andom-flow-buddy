@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, FileSpreadsheet } from "lucide-react";
+import { LogOut, FileSpreadsheet, KeyRound } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
@@ -35,6 +35,11 @@ export function TopBar({ title, subtitle }: { title: string; subtitle?: string; 
             </Button>
           </Link>
         )}
+        <Link to="/trocar-senha">
+          <Button variant="ghost" size="sm" className="gap-2">
+            <KeyRound className="w-4 h-4" /> Trocar senha
+          </Button>
+        </Link>
         <Button onClick={logout} variant="ghost" size="sm" className="gap-2">
           <LogOut className="w-4 h-4" /> Sair
         </Button>
