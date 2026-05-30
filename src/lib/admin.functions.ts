@@ -112,39 +112,3 @@ export const adminDeleteStation = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
-
-// One-shot setup: ensures admin@andom.app exists with the requested password.
-// Safe to call repeatedly. No auth — but it ONLY touches the admin station and
-// only resets its password to the documented bootstrap value.
-export const ensureAdminBootstrap = createServerFn({ method: "POST" }).handler(async () => {
-  const email = "admin@andom.app";
-  const password = "260194";
-  // Find existing profile by station_key
-  const { data: existingProfile } = await supabaseAdmin
-    .from("profiles")
-    .select("id")
-    .eq("station_key", "admin")
-    .maybeSingle();
-  if (existingProfile?.id) {
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(existingProfile.id, {
-      password,
-    });
-    if (error) throw new Error(error.message);
-    return { updated: true };
-  }
-  // Create new admin user
-  const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-  });
-  if (error || !created.user) throw new Error(error?.message ?? "Falha");
-  const { error: pErr } = await supabaseAdmin.from("profiles").insert({
-    id: created.user.id,
-    station_key: "admin",
-    station_name: "Administrador",
-    role: "admin",
-  });
-  if (pErr) throw new Error(pErr.message);
-  return { created: true };
-});
