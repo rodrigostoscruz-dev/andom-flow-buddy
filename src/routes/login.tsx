@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import rcLogo from "@/assets/rc-solutche-logo.png";
-import { STATIONS, signInWithStation } from "@/lib/andom";
+import { signInWithStation, ROLE_LABELS, type Role } from "@/lib/andom";
+import { useServerFn } from "@tanstack/react-start";
+import { listStations } from "@/lib/stations.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,11 +11,32 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
+type StationRow = { station_key: string; station_name: string; role: Role };
+
 function LoginPage() {
   const navigate = useNavigate();
-  const [station, setStation] = useState("cabeca");
-  const [password, setPassword] = useState("andom123");
+  const [station, setStation] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [stations, setStations] = useState<StationRow[]>([]);
+  const fetchStations = useServerFn(listStations);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = (await fetchStations()) as StationRow[];
+        setStations(data);
+        if (data.length > 0) setStation(data[0].station_key);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [fetchStations]);
+
+  const grouped = stations.reduce<Record<string, StationRow[]>>((acc, s) => {
+    (acc[s.role] ||= []).push(s);
+    return acc;
+  }, {});
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,21 +71,13 @@ function LoginPage() {
               onChange={(e) => setStation(e.target.value)}
               className="mt-1 w-full h-10 rounded-md bg-background/60 border border-white/15 px-3 text-foreground"
             >
-              <optgroup label="Produção">
-                {STATIONS.filter((s) => s.role === "producao").map((s) => (
-                  <option key={s.key} value={s.key}>{s.name}</option>
-                ))}
-              </optgroup>
-              <optgroup label="Setores">
-                {STATIONS.filter((s) => s.role === "almoxarifado" || s.role === "qualidade").map((s) => (
-                  <option key={s.key} value={s.key}>{s.name}</option>
-                ))}
-              </optgroup>
-              <optgroup label="Administrador">
-                {STATIONS.filter((s) => s.role === "admin").map((s) => (
-                  <option key={s.key} value={s.key}>{s.name}</option>
-                ))}
-              </optgroup>
+              {Object.entries(grouped).map(([role, list]) => (
+                <optgroup key={role} label={ROLE_LABELS[role as Role] ?? role}>
+                  {list.map((s) => (
+                    <option key={s.station_key} value={s.station_key}>{s.station_name}</option>
+                  ))}
+                </optgroup>
+              ))}
             </select>
           </div>
           <div>
@@ -77,7 +92,7 @@ function LoginPage() {
           <Button type="submit" disabled={loading} className="w-full h-11 text-base font-semibold">
             {loading ? "Entrando…" : "Entrar"}
           </Button>
-          <p className="text-xs text-muted-foreground text-center">Senha padrão: <code className="text-foreground">andom123</code></p>
+          <p className="text-xs text-muted-foreground text-center">Cada posto/setor tem uma senha definida pelo administrador.</p>
         </form>
       </div>
     </div>

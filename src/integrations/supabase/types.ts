@@ -16,6 +16,8 @@ export type Database = {
     Tables: {
       calls: {
         Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
           color: string
           duration_seconds: number | null
           ended_at: string | null
@@ -28,6 +30,8 @@ export type Database = {
           status: Database["public"]["Enums"]["call_status"]
         }
         Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
           color: string
           duration_seconds?: number | null
           ended_at?: string | null
@@ -40,6 +44,8 @@ export type Database = {
           status?: Database["public"]["Enums"]["call_status"]
         }
         Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
           color?: string
           duration_seconds?: number | null
           ended_at?: string | null
@@ -98,7 +104,15 @@ export type Database = {
     Enums: {
       call_sector: "almoxarifado" | "qualidade"
       call_status: "ativo" | "encerrado"
-      user_role: "producao" | "almoxarifado" | "qualidade" | "admin"
+      user_role:
+        | "producao"
+        | "almoxarifado"
+        | "qualidade"
+        | "admin"
+        | "coord_qualidade"
+        | "coord_almoxarifado"
+        | "gerente_supply"
+        | "diretor_industrial"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -228,7 +242,16 @@ export const Constants = {
     Enums: {
       call_sector: ["almoxarifado", "qualidade"],
       call_status: ["ativo", "encerrado"],
-      user_role: ["producao", "almoxarifado", "qualidade", "admin"],
+      user_role: [
+        "producao",
+        "almoxarifado",
+        "qualidade",
+        "admin",
+        "coord_qualidade",
+        "coord_almoxarifado",
+        "gerente_supply",
+        "diretor_industrial",
+      ],
     },
   },
 } as const
