@@ -15,8 +15,11 @@ function Index() {
       if (!session) return navigate({ to: "/login" });
       const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single();
       if (!profile) return navigate({ to: "/login" });
-      if (profile.role === "producao") navigate({ to: "/posto" });
-      else navigate({ to: "/painel" });
+      const r = profile.role;
+      if (r === "producao") navigate({ to: "/posto" });
+      else if (r === "admin") navigate({ to: "/admin" });
+      else if (r === "almoxarifado" || r === "qualidade") navigate({ to: "/painel" });
+      else navigate({ to: "/coordenador" });
     })();
   }, [navigate]);
   return (
