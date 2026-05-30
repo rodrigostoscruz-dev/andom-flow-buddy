@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrocarSenhaRouteImport } from './routes/trocar-senha'
 import { Route as RelatorioRouteImport } from './routes/relatorio'
 import { Route as PostoRouteImport } from './routes/posto'
 import { Route as PainelRouteImport } from './routes/painel'
@@ -17,6 +18,11 @@ import { Route as CoordenadorRouteImport } from './routes/coordenador'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TrocarSenhaRoute = TrocarSenhaRouteImport.update({
+  id: '/trocar-senha',
+  path: '/trocar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RelatorioRoute = RelatorioRouteImport.update({
   id: '/relatorio',
   path: '/relatorio',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/painel': typeof PainelRoute
   '/posto': typeof PostoRoute
   '/relatorio': typeof RelatorioRoute
+  '/trocar-senha': typeof TrocarSenhaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/painel': typeof PainelRoute
   '/posto': typeof PostoRoute
   '/relatorio': typeof RelatorioRoute
+  '/trocar-senha': typeof TrocarSenhaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/painel': typeof PainelRoute
   '/posto': typeof PostoRoute
   '/relatorio': typeof RelatorioRoute
+  '/trocar-senha': typeof TrocarSenhaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/posto'
     | '/relatorio'
+    | '/trocar-senha'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/posto'
     | '/relatorio'
+    | '/trocar-senha'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/posto'
     | '/relatorio'
+    | '/trocar-senha'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,10 +131,18 @@ export interface RootRouteChildren {
   PainelRoute: typeof PainelRoute
   PostoRoute: typeof PostoRoute
   RelatorioRoute: typeof RelatorioRoute
+  TrocarSenhaRoute: typeof TrocarSenhaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trocar-senha': {
+      id: '/trocar-senha'
+      path: '/trocar-senha'
+      fullPath: '/trocar-senha'
+      preLoaderRoute: typeof TrocarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/relatorio': {
       id: '/relatorio'
       path: '/relatorio'
@@ -183,7 +203,18 @@ const rootRouteChildren: RootRouteChildren = {
   PainelRoute: PainelRoute,
   PostoRoute: PostoRoute,
   RelatorioRoute: RelatorioRoute,
+  TrocarSenhaRoute: TrocarSenhaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
