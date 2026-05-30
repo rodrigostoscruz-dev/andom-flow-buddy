@@ -16,6 +16,8 @@ export type Database = {
     Tables: {
       calls: {
         Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
           color: string
           duration_seconds: number | null
           ended_at: string | null
@@ -28,6 +30,8 @@ export type Database = {
           status: Database["public"]["Enums"]["call_status"]
         }
         Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
           color: string
           duration_seconds?: number | null
           ended_at?: string | null
@@ -40,6 +44,8 @@ export type Database = {
           status?: Database["public"]["Enums"]["call_status"]
         }
         Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
           color?: string
           duration_seconds?: number | null
           ended_at?: string | null
