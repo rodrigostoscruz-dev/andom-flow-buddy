@@ -33,8 +33,22 @@ function LoginPage() {
     })();
   }, [fetchStations]);
 
+  const GROUP_LABELS: Record<string, string> = {
+    producao: "Produção",
+    almoxarifado: "Almoxarifado",
+    qualidade: "Qualidade",
+    admin: "Administrador",
+  };
+  const GROUP_ORDER = ["producao", "almoxarifado", "qualidade", "admin"];
+  function groupOf(role: Role): string {
+    if (role === "almoxarifado" || role === "coord_almoxarifado" || role === "gerente_supply" || role === "diretor_industrial") return "almoxarifado";
+    if (role === "qualidade" || role === "coord_qualidade") return "qualidade";
+    if (role === "admin") return "admin";
+    return "producao";
+  }
   const grouped = stations.reduce<Record<string, StationRow[]>>((acc, s) => {
-    (acc[s.role] ||= []).push(s);
+    const g = groupOf(s.role);
+    (acc[g] ||= []).push(s);
     return acc;
   }, {});
 
@@ -71,10 +85,13 @@ function LoginPage() {
               onChange={(e) => setStation(e.target.value)}
               className="mt-1 w-full h-10 rounded-md bg-background/60 border border-white/15 px-3 text-foreground"
             >
-              {Object.entries(grouped).map(([role, list]) => (
-                <optgroup key={role} label={ROLE_LABELS[role as Role] ?? role}>
-                  {list.map((s) => (
-                    <option key={s.station_key} value={s.station_key}>{s.station_name}</option>
+              {GROUP_ORDER.filter((g) => grouped[g]?.length).map((g) => (
+                <optgroup key={g} label={GROUP_LABELS[g]}>
+                  {grouped[g].map((s) => (
+                    <option key={s.station_key} value={s.station_key}>
+                      {s.station_name}
+                      {s.role !== g && s.role !== "producao" ? ` — ${ROLE_LABELS[s.role]}` : ""}
+                    </option>
                   ))}
                 </optgroup>
               ))}
