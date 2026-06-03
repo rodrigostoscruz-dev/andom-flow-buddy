@@ -100,7 +100,7 @@ function PainelPage() {
     };
 
     burst();
-    beepCycleRef.current = window.setInterval(burst, 30 * 60 * 1000);
+    beepCycleRef.current = window.setInterval(burst, 3 * 60 * 1000);
 
     return () => {
       if (beepCycleRef.current) window.clearInterval(beepCycleRef.current);
