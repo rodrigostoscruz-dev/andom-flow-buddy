@@ -34,7 +34,7 @@ function TrocarSenhaPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw1.length < 6) return toast.error("Senha deve ter pelo menos 6 caracteres");
+    if (!/^\d{6}$/.test(pw1)) return toast.error("A senha deve conter exatamente 6 dígitos numéricos");
     if (pw1 !== pw2) return toast.error("As senhas não conferem");
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password: pw1 });
@@ -65,14 +65,17 @@ function TrocarSenhaPage() {
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <Label>Nova senha</Label>
-            <Input type="password" value={pw1} onChange={(e) => setPw1(e.target.value)}
+            <Input type="password" inputMode="numeric" pattern="\d{6}" maxLength={6}
+              value={pw1} onChange={(e) => setPw1(e.target.value.replace(/\D/g, ""))}
               className="mt-1 bg-background/60 border-white/15" />
           </div>
           <div>
             <Label>Confirmar nova senha</Label>
-            <Input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)}
+            <Input type="password" inputMode="numeric" pattern="\d{6}" maxLength={6}
+              value={pw2} onChange={(e) => setPw2(e.target.value.replace(/\D/g, ""))}
               className="mt-1 bg-background/60 border-white/15" />
           </div>
+          <p className="text-xs text-muted-foreground">A senha deve conter exatamente 6 dígitos numéricos.</p>
           <Button type="submit" disabled={loading} className="w-full h-11 text-base font-semibold">
             {loading ? "Salvando…" : "Salvar nova senha"}
           </Button>
