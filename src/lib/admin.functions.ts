@@ -50,7 +50,7 @@ export const adminCreateStation = createServerFn({ method: "POST" })
         stationKey: z.string().min(1).max(50).regex(/^[a-z0-9_-]+$/),
         stationName: z.string().min(1).max(120),
         role: z.enum(ROLES),
-        password: z.string().min(6).max(120),
+        password: z.string().regex(/^\d{6}$/, "Senha deve ter exatamente 6 dígitos numéricos"),
       })
       .parse(input),
   )
@@ -84,7 +84,7 @@ export const adminUpdateStation = createServerFn({ method: "POST" })
         id: z.string().uuid(),
         stationName: z.string().min(1).max(120),
         role: z.enum(ROLES),
-        password: z.string().min(6).max(120).optional().or(z.literal("")),
+        password: z.union([z.string().regex(/^\d{6}$/, "Senha deve ter exatamente 6 dígitos numéricos"), z.literal("")]).optional(),
       })
       .parse(input),
   )
@@ -95,7 +95,7 @@ export const adminUpdateStation = createServerFn({ method: "POST" })
       .update({ station_name: data.stationName, role: data.role })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
-    if (data.password && data.password.length >= 6) {
+    if (data.password && /^\d{6}$/.test(data.password)) {
       const { error: aErr } = await supabaseAdmin.auth.admin.updateUserById(data.id, {
         password: data.password,
       });
