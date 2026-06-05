@@ -19,6 +19,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [stations, setStations] = useState<StationRow[]>([]);
+  const [wantChange, setWantChange] = useState(false);
   const fetchStations = useServerFn(listStations);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ function LoginPage() {
     const { error } = await signInWithStation(station, password);
     setLoading(false);
     if (error) return toast.error("Falha no login: " + error.message);
-    navigate({ to: "/" });
+    navigate({ to: wantChange ? "/trocar-senha" : "/" });
   }
 
   return (
@@ -109,6 +110,15 @@ function LoginPage() {
           <Button type="submit" disabled={loading} className="w-full h-11 text-base font-semibold">
             {loading ? "Entrando…" : "Entrar"}
           </Button>
+          <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={wantChange}
+              onChange={(e) => setWantChange(e.target.checked)}
+              className="h-4 w-4 rounded border-white/20 bg-background/60"
+            />
+            Quero alterar minha senha após entrar
+          </label>
           <p className="text-xs text-muted-foreground text-center">Cada posto/setor tem uma senha definida pelo administrador.</p>
         </form>
       </div>
