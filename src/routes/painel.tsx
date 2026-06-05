@@ -56,14 +56,16 @@ function PainelPage() {
       .channel("painel-" + profile.role)
       .on("postgres_changes", { event: "*", schema: "public", table: "calls" }, () => refresh())
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    const i = window.setInterval(refresh, 3 * 60 * 1000);
+    return () => { supabase.removeChannel(ch); window.clearInterval(i); };
   }, [profile]);
 
   // Intermittent beep when there are active calls.
   // Plays short beeps during 10 seconds, then waits 3 minutes, and repeats.
+  const pendingCount = calls.filter((c) => !c.acknowledged_at).length;
   useEffect(() => {
     if (!profile) return;
-    if (calls.length === 0) return;
+    if (pendingCount === 0) return;
 
     const ensureCtx = () => {
       if (!audioCtxRef.current) {
@@ -107,7 +109,7 @@ function PainelPage() {
       beepTimeoutsRef.current.forEach((t) => window.clearTimeout(t));
       beepTimeoutsRef.current = [];
     };
-  }, [profile, calls.length === 0]);
+  }, [profile, pendingCount === 0]);
 
   if (!profile) return null;
 

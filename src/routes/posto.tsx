@@ -63,7 +63,8 @@ function PostoPage() {
       .on("postgres_changes", { event: "*", schema: "public", table: "calls", filter: `station_id=eq.${profile.id}` },
         () => refresh(profile.id))
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    const i = window.setInterval(() => refresh(profile.id), 3 * 60 * 1000);
+    return () => { supabase.removeChannel(ch); window.clearInterval(i); };
   }, [profile]);
 
   async function call(sector: "almoxarifado" | "qualidade", reasonId: string, label: string, color: "red" | "orange" | "yellow") {

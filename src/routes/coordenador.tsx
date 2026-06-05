@@ -62,12 +62,13 @@ function CoordenadorPage() {
       .channel("coord-" + profile.id)
       .on("postgres_changes", { event: "*", schema: "public", table: "calls" }, () => refresh())
       .subscribe();
-    const i = window.setInterval(refresh, 60_000); // refresh visibility windows
+    const i = window.setInterval(refresh, 3 * 60 * 1000);
     return () => { supabase.removeChannel(ch); window.clearInterval(i); };
   }, [profile]);
 
+  const pendingCount = calls.filter((c) => !c.acknowledged_at).length;
   useEffect(() => {
-    if (!profile || calls.length === 0) return;
+    if (!profile || pendingCount === 0) return;
     const ensureCtx = () => {
       if (!audioCtxRef.current) {
         const Ctx = (window.AudioContext || (window as any).webkitAudioContext);
@@ -97,7 +98,7 @@ function CoordenadorPage() {
       beepTimeoutsRef.current.forEach((t) => window.clearTimeout(t));
       beepTimeoutsRef.current = [];
     };
-  }, [profile, calls.length === 0]);
+  }, [profile, pendingCount === 0]);
 
   async function acknowledge(id: string) {
     if (!profile) return;
