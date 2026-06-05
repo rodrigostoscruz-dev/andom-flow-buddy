@@ -13,6 +13,7 @@ import {
   adminCreateStation,
   adminUpdateStation,
   adminDeleteStation,
+  adminResetAllPasswords,
 } from "@/lib/admin.functions";
 import { ROLE_LABELS, ROLE_OPTIONS, type Role } from "@/lib/andom";
 
@@ -31,6 +32,7 @@ function AdminPage() {
   const create = useServerFn(adminCreateStation);
   const update = useServerFn(adminUpdateStation);
   const del = useServerFn(adminDeleteStation);
+  const resetAll = useServerFn(adminResetAllPasswords);
 
   const [items, setItems] = useState<Station[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,10 +102,25 @@ function AdminPage() {
     } catch (e: any) { toast.error(e.message); }
   }
 
+  async function onResetAll() {
+    if (!confirm("Resetar TODAS as senhas? Admin: 260194 | Demais usuários: 123456")) return;
+    try {
+      const r = (await resetAll()) as { count: number };
+      toast.success(`${r.count} senha(s) resetada(s)`);
+    } catch (e: any) { toast.error(e.message); }
+  }
+
   return (
     <div className="min-h-screen">
       <TopBar title="Administração" subtitle="Cadastro de postos, setores e senhas" />
       <main className="max-w-6xl mx-auto p-6 space-y-8">
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-4 flex items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold">Resetar senhas padrão</h3>
+            <p className="text-xs text-muted-foreground">Admin volta para <code>260194</code> e todos os demais para <code>123456</code>.</p>
+          </div>
+          <Button variant="outline" onClick={onResetAll}>Resetar todas</Button>
+        </section>
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Plus className="w-5 h-5" /> Novo posto/setor</h2>
           <form onSubmit={onCreate} className="grid gap-3 md:grid-cols-5">

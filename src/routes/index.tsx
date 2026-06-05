@@ -15,11 +15,10 @@ function Index() {
       if (!session) return navigate({ to: "/login" });
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role, must_change_password")
+        .select("role")
         .eq("id", session.user.id)
         .single();
       if (!profile) return navigate({ to: "/login" });
-      if (profile.must_change_password) return navigate({ to: "/trocar-senha" });
       const r = profile.role;
       if (r === "producao") navigate({ to: "/posto" });
       else if (r === "admin") navigate({ to: "/admin" });

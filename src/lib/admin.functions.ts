@@ -67,7 +67,7 @@ export const adminCreateStation = createServerFn({ method: "POST" })
       station_key: data.stationKey,
       station_name: data.stationName,
       role: data.role,
-      must_change_password: true,
+      must_change_password: false,
     });
     if (pErr) {
       await supabaseAdmin.auth.admin.deleteUser(created.user.id);
@@ -100,11 +100,6 @@ export const adminUpdateStation = createServerFn({ method: "POST" })
         password: data.password,
       });
       if (aErr) throw new Error(aErr.message);
-      const { error: fErr } = await supabaseAdmin
-        .from("profiles")
-        .update({ must_change_password: true })
-        .eq("id", data.id);
-      if (fErr) throw new Error(fErr.message);
     }
     return { ok: true };
   });
@@ -117,4 +112,23 @@ export const adminDeleteStation = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+export const adminResetAllPasswords = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.userId);
+    const { data: profs, error } = await supabaseAdmin
+      .from("profiles")
+      .select("id, role");
+    if (error) throw new Error(error.message);
+    let count = 0;
+    for (const p of profs ?? []) {
+      const password = p.role === "admin" ? "260194" : "123456";
+      const { error: aErr } = await supabaseAdmin.auth.admin.updateUserById(p.id, { password });
+      if (aErr) throw new Error(aErr.message);
+      count++;
+    }
+    await supabaseAdmin.from("profiles").update({ must_change_password: false }).neq("id", "00000000-0000-0000-0000-000000000000");
+    return { count };
   });
