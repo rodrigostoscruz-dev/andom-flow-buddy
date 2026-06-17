@@ -28,6 +28,33 @@ function PainelPage() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const beepCycleRef = useRef<number | null>(null);
   const beepTimeoutsRef = useRef<number[]>([]);
+  const [audioReady, setAudioReady] = useState(false);
+
+  const enableAudio = () => {
+    try {
+      const Ctx = (window.AudioContext || (window as any).webkitAudioContext);
+      if (!Ctx) return;
+      if (!audioCtxRef.current) audioCtxRef.current = new Ctx();
+      audioCtxRef.current.resume().catch(() => {});
+      // Silent ping to fully unlock on iOS/Safari
+      const o = audioCtxRef.current.createOscillator();
+      const g = audioCtxRef.current.createGain();
+      g.gain.value = 0.0001;
+      o.connect(g).connect(audioCtxRef.current.destination);
+      o.start(); o.stop(audioCtxRef.current.currentTime + 0.05);
+      setAudioReady(true);
+    } catch {}
+  };
+
+  useEffect(() => {
+    const handler = () => { enableAudio(); };
+    window.addEventListener("pointerdown", handler, { once: true });
+    window.addEventListener("keydown", handler, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", handler);
+      window.removeEventListener("keydown", handler);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
