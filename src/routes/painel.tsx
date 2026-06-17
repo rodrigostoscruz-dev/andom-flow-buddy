@@ -157,6 +157,16 @@ function PainelPage() {
         subtitle={`${calls.length} chamado(s) em aberto`}
       />
       <main className="max-w-7xl mx-auto p-6">
+        {!audioReady && (
+          <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3">
+            <div className="text-sm">
+              Avisos sonoros estão <strong>desativados</strong> pelo navegador. Clique para ativar.
+            </div>
+            <Button onClick={enableAudio} variant="secondary" className="font-bold">
+              Ativar avisos sonoros
+            </Button>
+          </div>
+        )}
         {calls.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground">
             <Inbox className="w-16 h-16 mx-auto mb-4 opacity-40" />
