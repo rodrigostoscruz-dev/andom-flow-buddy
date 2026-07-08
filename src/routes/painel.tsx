@@ -19,6 +19,7 @@ type Call = {
   started_at: string;
   status: string;
   acknowledged_at: string | null;
+  observation: string | null;
 };
 
 function PainelPage() {
@@ -164,6 +165,12 @@ function PainelPage() {
                 <div className="text-xs uppercase tracking-[0.25em] opacity-80">{c.sector}</div>
                 <div className="text-4xl font-black tracking-tight leading-tight mt-1">{c.station_name}</div>
                 <div className="text-base font-semibold mt-2 opacity-95">{c.reason}</div>
+                {c.observation && (
+                  <div className="mt-3 bg-black/25 rounded-lg p-3 text-sm whitespace-pre-wrap">
+                    <div className="text-[10px] uppercase tracking-widest opacity-80 mb-1">Observação</div>
+                    {c.observation}
+                  </div>
+                )}
                 <div className="text-3xl font-bold mt-6"><Timer startedAt={c.started_at} /></div>
                 {c.acknowledged_at ? (
                   <div className="mt-4 inline-flex items-center gap-2 bg-white/20 rounded-md px-3 py-1 text-sm">
