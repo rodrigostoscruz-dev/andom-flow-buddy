@@ -7,6 +7,8 @@ import { Timer } from "@/components/andom/Timer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AlertCircle, Package, Boxes, ShieldCheck, PackageX, X, CheckCircle2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/posto")({ component: PostoPage });
 
@@ -19,6 +21,7 @@ type Call = {
   started_at: string;
   status: string;
   acknowledged_at: string | null;
+  observation: string | null;
 };
 
 const ICONS: Record<string, any> = {
@@ -33,6 +36,13 @@ function PostoPage() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [active, setActive] = useState<Call[]>([]);
+  const [obsDialog, setObsDialog] = useState<null | {
+    sector: "almoxarifado" | "qualidade";
+    reasonId: string;
+    label: string;
+    color: "red" | "orange" | "yellow";
+  }>(null);
+  const [obsText, setObsText] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -67,7 +77,13 @@ function PostoPage() {
     return () => { supabase.removeChannel(ch); window.clearInterval(i); };
   }, [profile]);
 
-  async function call(sector: "almoxarifado" | "qualidade", reasonId: string, label: string, color: "red" | "orange" | "yellow") {
+  async function call(
+    sector: "almoxarifado" | "qualidade",
+    reasonId: string,
+    label: string,
+    color: "red" | "orange" | "yellow",
+    observation?: string,
+  ) {
     if (!profile) return;
     if (active.some((c) => c.reason === label)) {
       toast.warning("Este chamado já está ativo.");
@@ -79,9 +95,24 @@ function PostoPage() {
       sector,
       reason: label,
       color,
+      observation: observation?.trim() ? observation.trim() : null,
     });
     if (error) toast.error(error.message);
     else toast.success("Chamado enviado");
+  }
+
+  function handleReasonClick(
+    sector: "almoxarifado" | "qualidade",
+    reasonId: string,
+    label: string,
+    color: "red" | "orange" | "yellow",
+  ) {
+    if (reasonId === "parado" || reasonId === "separacao-errada") {
+      setObsText("");
+      setObsDialog({ sector, reasonId, label, color });
+      return;
+    }
+    call(sector, reasonId, label, color);
   }
 
   async function close(id: string) {
@@ -142,7 +173,7 @@ function PostoPage() {
               return (
                 <button
                   key={r.id}
-                  onClick={() => call("almoxarifado", r.id, r.label, r.color)}
+                  onClick={() => handleReasonClick("almoxarifado", r.id, r.label, r.color)}
                   className={`${bg} text-white rounded-2xl p-6 text-left shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]`}
                 >
                   <Icon className="w-8 h-8 mb-3" />
@@ -160,7 +191,7 @@ function PostoPage() {
               return (
                 <button
                   key={r.id}
-                  onClick={() => call("qualidade", r.id, r.label, r.color)}
+                  onClick={() => handleReasonClick("qualidade", r.id, r.label, r.color)}
                   className="bg-[oklch(0.55_0.25_27)] hover:bg-[oklch(0.6_0.25_27)] text-white rounded-2xl p-6 text-left shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   <Icon className="w-8 h-8 mb-3" />
@@ -171,6 +202,34 @@ function PostoPage() {
           </div>
         </section>
       </main>
+
+      <Dialog open={!!obsDialog} onOpenChange={(open) => { if (!open) setObsDialog(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Observação — {obsDialog?.label}</DialogTitle>
+          </DialogHeader>
+          <Textarea
+            value={obsText}
+            onChange={(e) => setObsText(e.target.value)}
+            placeholder="Descreva o que está acontecendo (opcional)"
+            rows={5}
+            maxLength={500}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setObsDialog(null)}>Cancelar</Button>
+            <Button
+              onClick={() => {
+                if (!obsDialog) return;
+                const d = obsDialog;
+                setObsDialog(null);
+                call(d.sector, d.reasonId, d.label, d.color, obsText);
+              }}
+            >
+              Enviar chamado
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

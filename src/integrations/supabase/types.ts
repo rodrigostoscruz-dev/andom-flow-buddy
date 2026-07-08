@@ -22,6 +22,7 @@ export type Database = {
           duration_seconds: number | null
           ended_at: string | null
           id: string
+          observation: string | null
           reason: string
           sector: Database["public"]["Enums"]["call_sector"]
           started_at: string
@@ -36,6 +37,7 @@ export type Database = {
           duration_seconds?: number | null
           ended_at?: string | null
           id?: string
+          observation?: string | null
           reason: string
           sector: Database["public"]["Enums"]["call_sector"]
           started_at?: string
@@ -50,6 +52,7 @@ export type Database = {
           duration_seconds?: number | null
           ended_at?: string | null
           id?: string
+          observation?: string | null
           reason?: string
           sector?: Database["public"]["Enums"]["call_sector"]
           started_at?: string
