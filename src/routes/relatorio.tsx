@@ -19,6 +19,7 @@ type Call = {
   started_at: string;
   ended_at: string | null;
   duration_seconds: number | null;
+  observation: string | null;
 };
 
 function todayISO() { return new Date().toISOString().slice(0, 10); }
@@ -56,11 +57,12 @@ function RelatorioPage() {
   useEffect(() => { if (role) load(); /* eslint-disable-next-line */ }, [role]);
 
   function exportCSV() {
-    const headers = ["Posto", "Setor", "Motivo", "Status", "Início", "Fim", "Duração (s)", "Duração"];
+    const headers = ["Posto", "Setor", "Motivo", "Observação", "Status", "Início", "Fim", "Duração (s)", "Duração"];
     const lines = rows.map((r) => [
       r.station_name,
       r.sector,
       r.reason,
+      r.observation ?? "",
       r.status,
       new Date(r.started_at).toLocaleString("pt-BR"),
       r.ended_at ? new Date(r.ended_at).toLocaleString("pt-BR") : "",
@@ -106,6 +108,7 @@ function RelatorioPage() {
                 <th className="px-4 py-3">Posto</th>
                 <th className="px-4 py-3">Setor</th>
                 <th className="px-4 py-3">Motivo</th>
+                <th className="px-4 py-3">Observação</th>
                 <th className="px-4 py-3">Início</th>
                 <th className="px-4 py-3">Fim</th>
                 <th className="px-4 py-3">Duração</th>
@@ -118,6 +121,7 @@ function RelatorioPage() {
                   <td className="px-4 py-3 font-semibold">{r.station_name}</td>
                   <td className="px-4 py-3 capitalize">{r.sector}</td>
                   <td className="px-4 py-3">{r.reason}</td>
+                  <td className="px-4 py-3 text-muted-foreground max-w-xs whitespace-pre-wrap">{r.observation || "—"}</td>
                   <td className="px-4 py-3 text-muted-foreground">{new Date(r.started_at).toLocaleString("pt-BR")}</td>
                   <td className="px-4 py-3 text-muted-foreground">{r.ended_at ? new Date(r.ended_at).toLocaleString("pt-BR") : "—"}</td>
                   <td className="px-4 py-3 font-mono">{r.duration_seconds != null ? formatDuration(r.duration_seconds) : "—"}</td>
@@ -129,7 +133,7 @@ function RelatorioPage() {
                 </tr>
               ))}
               {rows.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">Nenhum registro no período</td></tr>
+                <tr><td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">Nenhum registro no período</td></tr>
               )}
             </tbody>
           </table>

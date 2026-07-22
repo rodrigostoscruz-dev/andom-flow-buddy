@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import rcLogo from "@/assets/rc-solutech-logo.png.asset.json";
+import audacesLogo from "@/assets/audaces-logo.jpg.asset.json";
 import { signInWithStation, ROLE_LABELS, type Role } from "@/lib/andom";
 import { useServerFn } from "@tanstack/react-start";
 import { listStations } from "@/lib/stations.functions";
@@ -72,10 +72,10 @@ function LoginPage() {
             <p className="text-sm text-muted-foreground mt-1">Sinalização da produção</p>
           </div>
           <img
-            src={rcLogo.url}
-            alt="RC SoluTech - desenvolvedora"
+            src={audacesLogo.url}
+            alt="Audaces"
             className="h-28 w-28 rounded-lg object-contain bg-white ring-1 ring-white/15 shrink-0"
-            title="Desenvolvido por RC SoluTech"
+            title="Audaces"
           />
         </div>
         <form onSubmit={onSubmit} className="space-y-4">

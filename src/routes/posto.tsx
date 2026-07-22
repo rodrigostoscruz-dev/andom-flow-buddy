@@ -107,7 +107,12 @@ function PostoPage() {
     label: string,
     color: "red" | "orange" | "yellow",
   ) {
-    if (reasonId === "parado" || reasonId === "separacao-errada" || reasonId === "abast-kanban") {
+    if (
+      reasonId === "parado" ||
+      reasonId === "separacao-errada" ||
+      reasonId === "abast-kanban" ||
+      reasonId === "qualidade"
+    ) {
       setObsText("");
       setObsDialog({ sector, reasonId, label, color });
       return;
