@@ -128,6 +128,8 @@ function PostoPage() {
       setEditObs(null);
       refresh(profile.id);
     }
+  }
+
   async function close(id: string) {
     const { error } = await supabase.from("calls").update({ status: "encerrado", ended_at: new Date().toISOString() }).eq("id", id);
     if (error) toast.error(error.message);
