@@ -256,6 +256,25 @@ function PostoPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!editObs} onOpenChange={(open) => { if (!open) setEditObs(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar observação — {editObs?.reason}</DialogTitle>
+          </DialogHeader>
+          <Textarea
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            placeholder="Descreva o que está acontecendo"
+            rows={5}
+            maxLength={500}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditObs(null)}>Cancelar</Button>
+            <Button onClick={saveObservation}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
