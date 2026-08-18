@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { AlertCircle, Package, Boxes, ShieldCheck, PackageX, X, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Pencil } from "lucide-react";
 
 export const Route = createFileRoute("/posto")({ component: PostoPage });
 
@@ -43,6 +44,8 @@ function PostoPage() {
     color: "red" | "orange" | "yellow";
   }>(null);
   const [obsText, setObsText] = useState("");
+  const [editObs, setEditObs] = useState<null | { id: string; reason: string }>(null);
+  const [editText, setEditText] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -107,17 +110,24 @@ function PostoPage() {
     label: string,
     color: "red" | "orange" | "yellow",
   ) {
-    if (
-      reasonId === "parado" ||
-      reasonId === "separacao-errada" ||
-      reasonId === "abast-kanban" ||
-      reasonId === "qualidade"
-    ) {
-      setObsText("");
-      setObsDialog({ sector, reasonId, label, color });
-      return;
+    setObsText("");
+    setObsDialog({ sector, reasonId, label, color });
+  }
+
+
+  async function saveObservation() {
+    if (!editObs || !profile) return;
+    const { error } = await supabase
+      .from("calls")
+      .update({ observation: editText.trim() ? editText.trim() : null })
+      .eq("id", editObs.id)
+      .eq("station_id", profile.id);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Observação atualizada");
+      setEditObs(null);
+      refresh(profile.id);
     }
-    call(sector, reasonId, label, color);
   }
 
   async function close(id: string) {
@@ -148,6 +158,17 @@ function PostoPage() {
                       <div className="text-2xl font-black leading-tight">{profile.station_name}</div>
                       <div className="text-sm font-medium mt-1">{c.reason}</div>
                       <div className="text-3xl font-bold mt-3"><Timer startedAt={c.started_at} /></div>
+                      {c.observation && (
+                        <div className="mt-2 text-sm bg-black/20 rounded-md px-2 py-1 whitespace-pre-wrap">{c.observation}</div>
+                      )}
+                      <Button
+                        onClick={() => { setEditText(c.observation ?? ""); setEditObs({ id: c.id, reason: c.reason }); }}
+                        size="sm"
+                        variant="secondary"
+                        className="mt-3 gap-2 font-semibold"
+                      >
+                        <Pencil className="w-4 h-4" /> {c.observation ? "Editar observação" : "Adicionar observação"}
+                      </Button>
                       {c.acknowledged_at && (
                         <div className="mt-2 inline-flex items-center gap-2 bg-white/20 rounded-md px-2 py-1 text-xs">
                           <CheckCircle2 className="w-3 h-3" /> Setor a caminho
@@ -232,6 +253,25 @@ function PostoPage() {
             >
               Enviar chamado
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editObs} onOpenChange={(open) => { if (!open) setEditObs(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar observação — {editObs?.reason}</DialogTitle>
+          </DialogHeader>
+          <Textarea
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            placeholder="Descreva o que está acontecendo"
+            rows={5}
+            maxLength={500}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditObs(null)}>Cancelar</Button>
+            <Button onClick={saveObservation}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
