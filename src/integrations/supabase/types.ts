@@ -106,6 +106,10 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      working_seconds: {
+        Args: { p_end: string; p_start: string }
+        Returns: number
+      }
     }
     Enums: {
       call_sector: "almoxarifado" | "qualidade"
