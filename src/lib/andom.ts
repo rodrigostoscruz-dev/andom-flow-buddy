@@ -49,6 +49,39 @@ export async function signInWithStation(stationKey: string, password: string) {
   return supabase.auth.signInWithPassword({ email, password });
 }
 
+// Horário de trabalho: conta apenas entre 08:00 e 17:31 (America/Sao_Paulo).
+const WORK_TZ = "America/Sao_Paulo";
+const WORK_START_MS = 8 * 3600 * 1000;
+const WORK_END_MS = (17 * 3600 + 31 * 60) * 1000;
+const DAY_MS = 86400000;
+
+function wallClockMs(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: WORK_TZ,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(date);
+  const g = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+  return Date.UTC(g("year"), g("month") - 1, g("day"), g("hour") % 24, g("minute"), g("second"));
+}
+
+export function workingSeconds(start: string | number | Date, end: string | number | Date) {
+  const s = wallClockMs(new Date(start));
+  const e = wallClockMs(new Date(end));
+  if (!(e > s)) return 0;
+  let total = 0;
+  const lastDay = Math.floor(e / DAY_MS) * DAY_MS;
+  for (let day = Math.floor(s / DAY_MS) * DAY_MS; day <= lastDay; day += DAY_MS) {
+    total += Math.max(0, Math.min(e, day + WORK_END_MS) - Math.max(s, day + WORK_START_MS));
+  }
+  return Math.floor(total / 1000);
+}
+
 export function formatDuration(seconds: number) {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
