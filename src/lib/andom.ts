@@ -70,6 +70,11 @@ function wallClockMs(date: Date) {
   return Date.UTC(g("year"), g("month") - 1, g("day"), g("hour") % 24, g("minute"), g("second"));
 }
 
+function isWeekday(dayStartMs: number) {
+  const dow = new Date(dayStartMs).getUTCDay(); // 0 = domingo, 6 = sábado
+  return dow >= 1 && dow <= 5;
+}
+
 export function workingSeconds(start: string | number | Date, end: string | number | Date) {
   const s = wallClockMs(new Date(start));
   const e = wallClockMs(new Date(end));
@@ -77,6 +82,7 @@ export function workingSeconds(start: string | number | Date, end: string | numb
   let total = 0;
   const lastDay = Math.floor(e / DAY_MS) * DAY_MS;
   for (let day = Math.floor(s / DAY_MS) * DAY_MS; day <= lastDay; day += DAY_MS) {
+    if (!isWeekday(day)) continue;
     total += Math.max(0, Math.min(e, day + WORK_END_MS) - Math.max(s, day + WORK_START_MS));
   }
   return Math.floor(total / 1000);
