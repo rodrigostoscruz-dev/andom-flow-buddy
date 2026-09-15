@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formatDuration } from "@/lib/andom";
+import { formatDuration, workingSeconds } from "@/lib/andom";
 
 export function Timer({ startedAt }: { startedAt: string }) {
   const [now, setNow] = useState(Date.now());
