@@ -88,10 +88,6 @@ function PostoPage() {
     observation?: string,
   ) {
     if (!profile) return;
-    if (active.some((c) => c.reason === label)) {
-      toast.warning("Este chamado já está ativo.");
-      return;
-    }
     const { error } = await supabase.from("calls").insert({
       station_id: profile.id,
       station_name: profile.station_name,
