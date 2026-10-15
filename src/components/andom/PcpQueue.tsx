@@ -32,17 +32,17 @@ export function PcpQueue() {
   }, []);
 
   return (
-    <aside className="w-full lg:w-80 shrink-0 lg:border-l border-white/10 lg:min-h-[calc(100vh-73px)] p-4 space-y-3 bg-card/30">
+    <aside className="w-full lg:w-80 shrink-0 lg:border-l border-white/10 lg:min-h-[calc(100vh-73px)] p-4 space-y-3 bg-black/20">
       <div className="flex items-center gap-2 text-sm uppercase tracking-widest text-muted-foreground">
         <ClipboardList className="w-4 h-4" /> Em espera no PCP ({items.length})
       </div>
       {items.length === 0 && <p className="text-sm text-muted-foreground">Nenhum chamado no PCP.</p>}
       {items.map((c) => (
-        <div key={c.id} className="rounded-xl border border-white/10 bg-card p-3 text-sm">
+        <div key={c.id} className="rounded-xl border border-white/10 bg-white/5 p-3 text-foreground text-sm">
           <div className="font-bold">{c.station_name}</div>
           <div className="text-muted-foreground">{c.reason}</div>
           {c.pcp_observation && (
-            <div className="mt-2 rounded-md bg-muted/50 px-2 py-1 whitespace-pre-wrap">{c.pcp_observation}</div>
+            <div className="mt-2 rounded-md bg-black/30 px-2 py-1 whitespace-pre-wrap">{c.pcp_observation}</div>
           )}
           <div className="mt-2 flex items-center justify-between">
             <span className="font-semibold"><Timer startedAt={c.started_at} /></span>
