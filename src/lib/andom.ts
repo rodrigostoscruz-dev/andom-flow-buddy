@@ -8,8 +8,7 @@ export type Role =
   | "coord_qualidade"
   | "coord_almoxarifado"
   | "gerente_supply"
-  | "diretor_industrial"
-  | "pcp";
+  | "diretor_industrial";
 
 export const ROLE_LABELS: Record<Role, string> = {
   producao: "Produção",
@@ -20,7 +19,6 @@ export const ROLE_LABELS: Record<Role, string> = {
   coord_almoxarifado: "Coordenador Almoxarifado",
   gerente_supply: "Gerente Supply Chain",
   diretor_industrial: "Diretor Industrial",
-  pcp: "PCP",
 };
 
 export const ROLE_OPTIONS: Role[] = [
@@ -31,7 +29,6 @@ export const ROLE_OPTIONS: Role[] = [
   "coord_almoxarifado",
   "gerente_supply",
   "diretor_industrial",
-  "pcp",
   "admin",
 ];
 

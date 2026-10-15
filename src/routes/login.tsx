@@ -38,14 +38,12 @@ function LoginPage() {
     producao: "Produção",
     almoxarifado: "Almoxarifado",
     qualidade: "Qualidade",
-    pcp: "PCP",
     admin: "Administrador",
   };
-  const GROUP_ORDER = ["producao", "almoxarifado", "qualidade", "pcp", "admin"];
+  const GROUP_ORDER = ["producao", "almoxarifado", "qualidade", "admin"];
   function groupOf(role: Role): string {
     if (role === "almoxarifado" || role === "coord_almoxarifado" || role === "gerente_supply" || role === "diretor_industrial") return "almoxarifado";
     if (role === "qualidade" || role === "coord_qualidade") return "qualidade";
-    if (role === "pcp") return "pcp";
     if (role === "admin") return "admin";
     return "producao";
   }
