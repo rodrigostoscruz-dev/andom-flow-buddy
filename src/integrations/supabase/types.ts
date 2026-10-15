@@ -23,6 +23,11 @@ export type Database = {
           ended_at: string | null
           id: string
           observation: string | null
+          pcp_cancelled_at: string | null
+          pcp_observation: string | null
+          pcp_received_at: string | null
+          pcp_sent_at: string | null
+          pcp_status: string | null
           reason: string
           sector: Database["public"]["Enums"]["call_sector"]
           started_at: string
@@ -38,6 +43,11 @@ export type Database = {
           ended_at?: string | null
           id?: string
           observation?: string | null
+          pcp_cancelled_at?: string | null
+          pcp_observation?: string | null
+          pcp_received_at?: string | null
+          pcp_sent_at?: string | null
+          pcp_status?: string | null
           reason: string
           sector: Database["public"]["Enums"]["call_sector"]
           started_at?: string
@@ -53,6 +63,11 @@ export type Database = {
           ended_at?: string | null
           id?: string
           observation?: string | null
+          pcp_cancelled_at?: string | null
+          pcp_observation?: string | null
+          pcp_received_at?: string | null
+          pcp_sent_at?: string | null
+          pcp_status?: string | null
           reason?: string
           sector?: Database["public"]["Enums"]["call_sector"]
           started_at?: string
@@ -102,9 +117,33 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_pcp: { Args: { p_call_id: string }; Returns: undefined }
       current_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
+      }
+      is_almox_group: { Args: never; Returns: boolean }
+      pcp_queue: {
+        Args: never
+        Returns: {
+          id: string
+          pcp_observation: string
+          pcp_received_at: string
+          pcp_sent_at: string
+          pcp_status: string
+          reason: string
+          started_at: string
+          station_name: string
+        }[]
+      }
+      pcp_receive: { Args: { p_call_id: string }; Returns: undefined }
+      send_to_pcp: {
+        Args: { p_call_id: string; p_observation: string }
+        Returns: undefined
+      }
+      update_pcp_observation: {
+        Args: { p_call_id: string; p_observation: string }
+        Returns: undefined
       }
       working_seconds: {
         Args: { p_end: string; p_start: string }
