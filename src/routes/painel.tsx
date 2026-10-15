@@ -3,7 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TopBar } from "@/components/andom/TopBar";
 import { Timer } from "@/components/andom/Timer";
-import { Inbox, CheckCircle2 } from "lucide-react";
+import { Inbox, CheckCircle2, Send, XCircle, Pencil } from "lucide-react";
+import { PcpQueue } from "@/components/andom/PcpQueue";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -20,6 +23,8 @@ type Call = {
   status: string;
   acknowledged_at: string | null;
   observation: string | null;
+  pcp_status: string | null;
+  pcp_observation: string | null;
 };
 
 function PainelPage() {
@@ -29,6 +34,8 @@ function PainelPage() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const beepCycleRef = useRef<number | null>(null);
   const beepTimeoutsRef = useRef<number[]>([]);
+  const [pcpDialog, setPcpDialog] = useState<null | { id: string; edit: boolean }>(null);
+  const [pcpText, setPcpText] = useState("");
 
   useEffect(() => {
     const unlock = () => {
@@ -143,13 +150,34 @@ function PainelPage() {
     else toast.success("Marcado como em atendimento");
   }
 
+  const canPcp = profile.role === "almoxarifado" || profile.role === "admin";
+
+  async function submitPcp() {
+    if (!pcpDialog) return;
+    const d = pcpDialog;
+    const { error } = d.edit
+      ? await supabase.rpc("update_pcp_observation", { p_call_id: d.id, p_observation: pcpText })
+      : await supabase.rpc("send_to_pcp", { p_call_id: d.id, p_observation: pcpText });
+    if (error) return toast.error(error.message);
+    toast.success(d.edit ? "Observação do PCP atualizada" : "Chamado enviado ao PCP");
+    setPcpDialog(null);
+    refresh();
+  }
+
+  async function cancelPcp(id: string) {
+    const { error } = await supabase.rpc("cancel_pcp", { p_call_id: id });
+    if (error) toast.error(error.message);
+    else { toast.success("Chamado ao PCP cancelado"); refresh(); }
+  }
+
   return (
     <div className="min-h-screen">
       <TopBar
         title={`Painel ${profile.station_name}`}
         subtitle={`${calls.length} chamado(s) em aberto`}
       />
-      <main className="max-w-7xl mx-auto p-6">
+      <div className="flex flex-col lg:flex-row">
+      <main className="flex-1 p-6">
         {calls.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground">
             <Inbox className="w-16 h-16 mx-auto mb-4 opacity-40" />
@@ -181,11 +209,55 @@ function PainelPage() {
                     <CheckCircle2 className="w-4 h-4" /> Em Atendimento
                   </Button>
                 )}
+                {canPcp && c.sector === "almoxarifado" && (
+                  <div className="mt-4 border-t border-white/20 pt-3 space-y-2">
+                    {c.pcp_status === "aguardando" || c.pcp_status === "recebido" ? (
+                      <>
+                        <div className="inline-flex items-center gap-2 bg-white/20 rounded-md px-3 py-1 text-sm font-semibold">
+                          {c.pcp_status === "recebido" ? <><CheckCircle2 className="w-4 h-4" /> Recebido pelo PCP</> : <><Send className="w-4 h-4" /> Aguardando PCP</>}
+                        </div>
+                        {c.pcp_observation && (
+                          <div className="bg-black/25 rounded-lg p-2 text-sm whitespace-pre-wrap">
+                            <div className="text-[10px] uppercase tracking-widest opacity-80 mb-1">Observação ao PCP</div>
+                            {c.pcp_observation}
+                          </div>
+                        )}
+                        <div className="flex flex-wrap gap-2">
+                          <Button size="sm" variant="secondary" className="gap-2" onClick={() => { setPcpText(c.pcp_observation ?? ""); setPcpDialog({ id: c.id, edit: true }); }}>
+                            <Pencil className="w-4 h-4" /> Editar observação
+                          </Button>
+                          <Button size="sm" variant="destructive" className="gap-2" onClick={() => cancelPcp(c.id)}>
+                            <XCircle className="w-4 h-4" /> Cancelar PCP
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <Button size="sm" variant="secondary" className="gap-2 font-bold" onClick={() => { setPcpText(""); setPcpDialog({ id: c.id, edit: false }); }}>
+                        <Send className="w-4 h-4" /> PCP
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         )}
       </main>
+      <PcpQueue />
+      </div>
+
+      <Dialog open={!!pcpDialog} onOpenChange={(o) => { if (!o) setPcpDialog(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{pcpDialog?.edit ? "Editar observação ao PCP" : "Enviar chamado ao PCP"}</DialogTitle>
+          </DialogHeader>
+          <Textarea value={pcpText} onChange={(e) => setPcpText(e.target.value)} placeholder="Observação para o PCP (opcional)" rows={5} maxLength={500} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPcpDialog(null)}>Cancelar</Button>
+            <Button onClick={submitPcp}>{pcpDialog?.edit ? "Salvar" : "Enviar ao PCP"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

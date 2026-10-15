@@ -1,3 +1,4 @@
+import { PcpQueue } from "@/components/andom/PcpQueue";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -134,7 +135,8 @@ function CoordenadorPage() {
   return (
     <div className="min-h-screen">
       <TopBar title={ROLE_LABELS[profile.role]} subtitle={`${calls.length} chamado(s) em escalonamento`} />
-      <main className="max-w-7xl mx-auto p-6">
+      <div className="flex flex-col lg:flex-row">
+      <main className="flex-1 p-6">
         {calls.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground">
             <Inbox className="w-16 h-16 mx-auto mb-4 opacity-40" />
@@ -169,6 +171,8 @@ function CoordenadorPage() {
           </div>
         )}
       </main>
+      <PcpQueue />
+      </div>
     </div>
   );
 }

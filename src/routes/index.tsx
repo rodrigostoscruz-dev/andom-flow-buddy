@@ -21,6 +21,7 @@ function Index() {
       if (!profile) return navigate({ to: "/login" });
       const r = profile.role;
       if (r === "producao") navigate({ to: "/posto" });
+      else if (r === "pcp") navigate({ to: "/pcp" });
       else if (r === "admin") navigate({ to: "/admin" });
       else if (r === "almoxarifado" || r === "qualidade") navigate({ to: "/painel" });
       else navigate({ to: "/coordenador" });

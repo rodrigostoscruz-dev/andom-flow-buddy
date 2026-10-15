@@ -12,6 +12,7 @@ const ROLES = [
   "coord_almoxarifado",
   "gerente_supply",
   "diretor_industrial",
+  "pcp",
 ] as const;
 
 async function assertAdmin(userId: string) {
