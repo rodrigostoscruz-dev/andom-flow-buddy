@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CoordenadorRouteImport } from './routes/coordenador'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as PcpRouteImport } from './routes/pcp'
 import { Route as PostoRouteImport } from './routes/posto'
 import { Route as RelatorioRouteImport } from './routes/relatorio'
 import { Route as TrocarSenhaRouteImport } from './routes/trocar-senha'
@@ -43,6 +44,11 @@ const PainelRoute = PainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PcpRoute = PcpRouteImport.update({
+  id: '/pcp',
+  path: '/pcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PostoRoute = PostoRouteImport.update({
   id: '/posto',
   path: '/posto',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/coordenador': typeof CoordenadorRoute
   '/login': typeof LoginRoute
   '/painel': typeof PainelRoute
+  '/pcp': typeof PcpRoute
   '/posto': typeof PostoRoute
   '/relatorio': typeof RelatorioRoute
   '/trocar-senha': typeof TrocarSenhaRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/coordenador': typeof CoordenadorRoute
   '/login': typeof LoginRoute
   '/painel': typeof PainelRoute
+  '/pcp': typeof PcpRoute
   '/posto': typeof PostoRoute
   '/relatorio': typeof RelatorioRoute
   '/trocar-senha': typeof TrocarSenhaRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/coordenador': typeof CoordenadorRoute
   '/login': typeof LoginRoute
   '/painel': typeof PainelRoute
+  '/pcp': typeof PcpRoute
   '/posto': typeof PostoRoute
   '/relatorio': typeof RelatorioRoute
   '/trocar-senha': typeof TrocarSenhaRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/coordenador'
     | '/login'
     | '/painel'
+    | '/pcp'
     | '/posto'
     | '/relatorio'
     | '/trocar-senha'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/coordenador'
     | '/login'
     | '/painel'
+    | '/pcp'
     | '/posto'
     | '/relatorio'
     | '/trocar-senha'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/coordenador'
     | '/login'
     | '/painel'
+    | '/pcp'
     | '/posto'
     | '/relatorio'
     | '/trocar-senha'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   CoordenadorRoute: typeof CoordenadorRoute
   LoginRoute: typeof LoginRoute
   PainelRoute: typeof PainelRoute
+  PcpRoute: typeof PcpRoute
   PostoRoute: typeof PostoRoute
   RelatorioRoute: typeof RelatorioRoute
   TrocarSenhaRoute: typeof TrocarSenhaRoute
@@ -171,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pcp': {
+      id: '/pcp'
+      path: '/pcp'
+      fullPath: '/pcp'
+      preLoaderRoute: typeof PcpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/posto': {
       id: '/posto'
       path: '/posto'
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoordenadorRoute: CoordenadorRoute,
   LoginRoute: LoginRoute,
   PainelRoute: PainelRoute,
+  PcpRoute: PcpRoute,
   PostoRoute: PostoRoute,
   RelatorioRoute: RelatorioRoute,
   TrocarSenhaRoute: TrocarSenhaRoute,

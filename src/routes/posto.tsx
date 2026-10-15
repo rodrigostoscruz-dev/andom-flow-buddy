@@ -10,6 +10,7 @@ import { AlertCircle, Package, Boxes, ShieldCheck, PackageX, X, CheckCircle2 } f
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Pencil } from "lucide-react";
+import { PcpQueue } from "@/components/andom/PcpQueue";
 
 export const Route = createFileRoute("/posto")({ component: PostoPage });
 
@@ -137,7 +138,8 @@ function PostoPage() {
   return (
     <div className="min-h-screen">
       <TopBar title={profile.station_name} subtitle="Posto de produção" />
-      <main className="max-w-7xl mx-auto p-6 space-y-8">
+      <div className="flex flex-col lg:flex-row">
+      <main className="flex-1 p-6 space-y-8">
         {/* Active calls / blinking panels */}
         {active.length > 0 && (
           <section className="space-y-3">
@@ -224,6 +226,8 @@ function PostoPage() {
           </div>
         </section>
       </main>
+      <PcpQueue />
+      </div>
 
       <Dialog open={!!obsDialog} onOpenChange={(open) => { if (!open) setObsDialog(null); }}>
         <DialogContent>
