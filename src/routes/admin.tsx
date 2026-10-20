@@ -16,6 +16,7 @@ import {
   adminResetAllPasswords,
 } from "@/lib/admin.functions";
 import { ROLE_LABELS, ROLE_OPTIONS, type Role } from "@/lib/andom";
+import { AdminOpenCalls } from "@/components/andom/AdminOpenCalls";
 
 export const Route = createFileRoute("/admin")({ component: AdminPage });
 
@@ -114,6 +115,7 @@ function AdminPage() {
     <div className="min-h-screen">
       <TopBar title="Administração" subtitle="Cadastro de postos, setores e senhas" />
       <main className="max-w-6xl mx-auto p-6 space-y-8">
+        <AdminOpenCalls />
         <section className="rounded-2xl border border-white/10 bg-white/5 p-4 flex items-center justify-between gap-4">
           <div>
             <h3 className="font-bold">Resetar senhas padrão</h3>
