@@ -117,6 +117,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_reopen_call: {
+        Args: { p_call_id: string; p_stage: string }
+        Returns: undefined
+      }
       cancel_pcp: { Args: { p_call_id: string }; Returns: undefined }
       current_role: {
         Args: never
